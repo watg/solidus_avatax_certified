@@ -11,6 +11,8 @@ module Spree
     end
 
     def compute_shipment_or_line_item(item)
+      return 0 unless ::Spree::Avatax::Config.tax_calculation
+
       order = item.order
 
       if can_calculate_tax?(order)
