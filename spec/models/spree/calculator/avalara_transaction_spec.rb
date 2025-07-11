@@ -63,11 +63,11 @@ RSpec.describe Spree::Calculator::AvalaraTransaction do
         expect(calculator.compute(line_item)).to eq(0.1)
       end
 
-      it 'is equal to the previous tax total if preference tax_calculation is false' do
+      it 'is zero if preference tax_calculation is false' do
         Spree::Avatax::Config.tax_calculation = false
 
         line_item.additional_tax_total = 0.1
-        expect(calculator.compute(line_item)).to eq(0.1)
+        expect(calculator.compute(line_item)).to be_zero
       end
 
       context 'when the order is discounted' do
