@@ -1,0 +1,63 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://sandbox-rest.avatax.com/api/v2/addresses/resolve?city&country=US&line1&line2=Northwest&postalCode&region=NY
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - application/json; charset=utf-8
+      User-Agent:
+      - AvaTax Ruby Gem 25.6.2
+      X-Avalara-Client:
+      - ";;RubySdk;25.6.2;"
+      Authorization:
+      - Basic MjAwNzIxMTMzMjo2MThEM0Y3NjdGMzhBOTg1
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response:
+    status:
+      code: 400
+      message: Bad Request
+    headers:
+      Date:
+      - Thu, 17 Jul 2025 08:53:05 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Cache-Control:
+      - private, no-cache, no-store
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - sameorigin
+      X-Xss-Protection:
+      - 1; mode=block
+      Referrer-Policy:
+      - same-origin
+      X-Permitted-Cross-Domain-Policies:
+      - none
+      X-Correlation-Id:
+      - 14330862-70bd-433f-84f1-080f4097f302
+      X-Avalara-Uid:
+      - 14330862-70bd-433f-84f1-080f4097f302
+      Serverduration:
+      - '00:00:00.0001916'
+      Api-Supported-Versions:
+      - '2.0'
+    body:
+      encoding: UTF-8
+      string: '{"error":{"code":"InvalidAddress","message":"The address value was
+        incomplete.","target":"IncorrectData","details":[{"code":"InvalidAddress","number":309,"message":"The
+        address value was incomplete.","description":"The address value NULL was incomplete.
+        You must provide either a valid postal code, line1 + city + region, or line1
+        + postal code.","faultCode":"Client","helpLink":"https://developer.avalara.com/avatax/errors/InvalidAddress","severity":"Error"}]}}'
+  recorded_at: Thu, 17 Jul 2025 08:53:05 GMT
+recorded_with: VCR 6.3.1
