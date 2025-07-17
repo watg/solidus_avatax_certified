@@ -16,6 +16,8 @@ module SolidusAvataxCertified
       end
 
       def messages
+        return unless result
+
         @messages ||= result['messages']
       end
 
@@ -24,11 +26,15 @@ module SolidusAvataxCertified
       end
 
       def error?
+        return false if suppress_exceptions?
+
         result['error'].present?
       end
 
       def failed?
-        error? || messages_present? && messages.any? { |m| m['severity'] == 'Error' }
+        return false if suppress_exceptions?
+
+        error? || errors_present?
       end
 
       def messages_present?
@@ -53,6 +59,16 @@ module SolidusAvataxCertified
         else
           []
         end
+      end
+
+      private
+
+      def suppress_exceptions?
+        !::Spree::Avatax::Config.raise_exceptions && !result
+      end
+
+      def errors_present?
+        messages_present? && messages.any? { |m| m['severity'] == 'Error' }
       end
     end
   end
