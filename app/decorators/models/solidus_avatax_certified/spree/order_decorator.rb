@@ -3,6 +3,8 @@
 module SolidusAvataxCertified
   module Spree
     module OrderDecorator
+      ADDRESS_NOT_GEOCODED_MESSAGE = "Address not geocoded".freeze
+
       def self.prepended(base)
         base.has_one :avalara_transaction, dependent: :destroy
 
@@ -50,6 +52,14 @@ module SolidusAvataxCertified
         return response if !::Spree::Avatax::Config.refuse_checkout_address_validation_error
 
         response.summary_messages.each do |msg|
+          if msg.include?(ADDRESS_NOT_GEOCODED_MESSAGE)
+            if response.summary_messages.size <= 1
+              errors.add(:base, I18n.t("spree.ship_address_required"))
+            end
+
+            next
+          end
+
           errors.add(:address_validation_failure, msg)
         end
 

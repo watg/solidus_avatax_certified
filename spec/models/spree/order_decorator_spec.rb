@@ -138,19 +138,46 @@ describe Spree::Order, :vcr do
     end
 
     context 'validation failed' do
+      before do
+        order.ship_address.update(zipcode: "foobar", city: "Fooobar", address1: "1234 Foobar St")
+      end
+
       it 'returns false' do
         Spree::Avatax::Config.refuse_checkout_address_validation_error = true
-        order.ship_address.update(zipcode: nil, city: nil, address1: nil)
         response = order.validate_ship_address
 
         expect(response).to eq(false)
       end
 
-      it 'raise exceptions if raise_exceptions preference is enabled' do
-        Spree::Avatax::Config.raise_exceptions = true
-        order.ship_address.update(zipcode: nil, city: nil, address1: nil)
+      context "when Spree::Avatax::Config.refuse_checkout_address_validation_error is false" do
+        before do
+          allow(Spree::Avatax::Config).to receive(:refuse_checkout_address_validation_error).and_return(false)
+        end
 
-        expect{ order.validate_ship_address }.to raise_exception(SolidusAvataxCertified::RequestError)
+        it "adds the proper error message to the order" do
+          order.validate_ship_address
+
+          expect(order.errors[:address_validation_failure]).to be_empty
+        end
+
+        it "raise exceptions if raise_exceptions preference is enabled" do
+          allow(Spree::Avatax::Config).to receive(:raise_exceptions).and_return(true)
+
+          expect { order.validate_ship_address }.to raise_exception(SolidusAvataxCertified::RequestError)
+        end
+      end
+
+      context "when Spree::Avatax::Config.refuse_checkout_address_validation_error is true" do
+        before do
+          allow(Spree::Avatax::Config).to receive(:refuse_checkout_address_validation_error).and_return(true)
+        end
+
+        it "adds the proper error message to the order" do
+          order.validate_ship_address
+
+          expect(order.errors[:address_validation_failure]).to include("The city could not be determined.")
+          expect(order.errors[:address_validation_failure]).not_to include("Address not geocoded.")
+        end
       end
     end
   end
